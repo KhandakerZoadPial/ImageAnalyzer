@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Analyzer|Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
+    <meta name="keywords" content="bootstrap 4, premium, marketing, multipurpose" />
+    <meta content="Themesbrand" name="author" />
+    <!-- favicon -->
+    <link rel="shortcut icon" href="{% static 'images/favicon1.ico' %}" />
+
+
+    <!-- css -->
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/materialdesignicons.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+</head>
+
+<body data-spy="scroll" data-target="#navbar" data-offset="20">
+    <!-- Loader -->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </div>
+
+    <section class="bg-account-pages vh-100 d-flex align-items-center bg-center position-relative"
+        style="background-image: url({% static 'images/auth-bg.png' %});">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="bg-white shadow">
+                        <div class="p-4">
+                            <div class="text-center mt-3">
+                                <a href="index-1.html">
+
+                                    <img src="https://belapay.com/wp-content/uploads/2021/04/166-1665242_fakery-logo-transparent-dummy-logo-png-clipart.jpg"
+                                        alt="" class="logo-dark" height="30" />
+                                    <b>Fake Logo</b>
+                                </a>
+                                <p class="text-muted mt-2">TagLine short Messagex</p>
+                            </div>
+                            <div class="p-3">
+                                <form class="av-invalid" id="main_form">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Email</label>
+                                        <input name="username" required placeholder="Enter Email" type="email"
+                                            class="form-control" value="" id="email" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="userpassword" class="form-label">Password</label>
+                                        <input name="password" required placeholder="Enter password" id="password"
+                                            type="password" class="form-control" value="" />
+                                    </div>
+
+                                    <div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-none">Log
+                                            In</button></div>
+                                    <div class="mt-4 mb-0 text-center">
+                                        <a class="text-dark" href=""><i class="icon-xs icon me-1"
+                                                data-feather="lock"></i> Forgot your password?</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p>Don't have an account ? <a href="{% url 'signup' %}" class="font-weight-semibold text-primary">
+                                Signup </a> </p>
+                    </div>
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </section>
+    <!-- end section -->
+
+    <!-- javascript -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/smooth-scroll.polyfills.min.js' %}"></script>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- App Js -->
+    <script src="{% static 'js/app.js' %}"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        function showToast(message, status) {
+            if (status === "success") {
+                toastr.success(message, "Success", {
+                    positionClass: "toast-bottom-center",
+                    timeOut: 5e3,
+                    closeButton: !0,
+                    debug: !1,
+                    newestOnTop: !0,
+                    progressBar: !0,
+                    preventDuplicates: !0,
+                    onclick: null,
+                    showDuration: "300",
+                    hideDuration: "1000",
+                    extendedTimeOut: "1000",
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut",
+                    tapToDismiss: !1
+                })
+            } else {
+                toastr.error(message, "Error", {
+                    positionClass: "toast-bottom-center",
+                    timeOut: 5e3,
+                    closeButton: !0,
+                    debug: !1,
+                    newestOnTop: !0,
+                    progressBar: !0,
+                    preventDuplicates: !0,
+                    onclick: null,
+                    showDuration: "300",
+                    hideDuration: "1000",
+                    extendedTimeOut: "1000",
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut",
+                    tapToDismiss: !1
+                })
+            }
+        }
+
+
+
+        $(document).ready(function () {
+            $('#main_form').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: "{% url 'login_' %}",
+                    data: {
+                        'email': $('#email').val(),
+                        'password': $('#password').val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function (data) {
+                        console.log('hitted')
+                        if (data.status === '1') {
+                            showToast('Logged In Successfully!', 'success');
+                            setTimeout(function () {100+100}, 7000);
+                            window.location = "{% url 'dashboard' %}"
+                        }
+                        else if (data.status === '2') {
+
+                            showToast('Wrong Credentials, Please provide valid Credentials!', 'error')
+                            
+
+                        }
+
+                    },
+
+                })
+            });
+            console.log($('#email').val())
+
+        })
+    </script>
+
+</body>
+
+</html>
