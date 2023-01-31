@@ -34,11 +34,11 @@
     </div>
 
     <section class="bg-account-pages vh-100 d-flex align-items-center bg-center position-relative"
-        style="background-image: url({% static 'images/auth-bg.png' %});">
+        style="background-image: url({% static 'images/auth-bg.png' %})">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow" id="target">
                         <div class="p-4">
                             <div class="text-center mt-3">
                                 <a href="index-1.html">
@@ -60,13 +60,13 @@
 
                                     <div class="mb-3">
                                         <label for="username" class="form-label">First Name</label>
-                                        <input required placeholder="Enter First Name" type="text"
-                                            class="form-control" value="" id="f_name" />
+                                        <input required placeholder="Enter First Name" type="text" class="form-control"
+                                            value="" id="f_name" />
                                     </div>
                                     <div class="mb-3">
                                         <label for="username" class="form-label">Last Name</label>
-                                        <input required placeholder="Enter Last Name" type="text"
-                                            class="form-control" value="" id="l_name" />
+                                        <input required placeholder="Enter Last Name" type="text" class="form-control"
+                                            value="" id="l_name" />
                                     </div>
 
                                     <div class="mb-3">
@@ -76,28 +76,33 @@
                                             <option value="female">Female</option>
                                             <option value="other">Other</option>
                                         </select>
-                                        
+
                                     </div>
 
                                     <div class="mb-3">
-                                        <label  class="form-label">Password</label>
-                                        <input  required placeholder="Enter password" id="password"
-                                            type="password" class="form-control" value="" />
+                                        <label class="form-label">Password</label>
+                                        <input required placeholder="Enter password" id="password" type="password"
+                                            class="form-control" value="" />
                                     </div>
                                     <div class="mb-3">
-                                        <label  class="form-label">Confirm Password</label>
-                                        <input required placeholder="Enter password" id="password2"
-                                            type="password" class="form-control" value="" />
+                                        <label class="form-label">Confirm Password</label>
+                                        <input required placeholder="Enter password" id="password2" type="password"
+                                            class="form-control" value="" />
                                     </div>
 
-                                    <div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-none">Signup</button></div>
-                                  
+                                    <div class="d-grid mt-3"><button type="submit"
+                                            class="btn btn-primary btn-none">Signup</button></div>
+
                                 </form>
                             </div>
                         </div>
                     </div>
+                    <div class="bg-white shadow" id="target2" style="display: none;">
+                        <h5>Pease Check Your Email To Verify Your Account</h5>
+                    </div>
                     <div class="text-center mt-4">
-                        <p>Already have an account ? <a href="{% url 'login_' %}" class="font-weight-semibold text-primary">
+                        <p>Already have an account ? <a href="{% url 'login_' %}"
+                                class="font-weight-semibold text-primary">
                                 Login </a> </p>
                     </div>
                 </div>
@@ -169,10 +174,13 @@
         }
 
 
+        var target1 = document.getElementById('target')
+        var target2 = document.getElementById('target2')
 
         $(document).ready(function () {
             $('#main_form').on('submit', function (e) {
                 e.preventDefault();
+                
                 $.ajax({
                     method: 'POST',
                     url: "{% url 'signup' %}",
@@ -189,20 +197,24 @@
                         console.log('hitted')
                         if (data.status === '1') {
                             showToast('Password Did not match!', 'error');
-                            
+
                         }
                         else if (data.status === '2') {
 
                             showToast('The Email is Already Taken!', 'error')
-                            
 
+
+                        }
+                        else if (data.status === '3') {
+                            target1.style.display = "none"
+                            target2.style.display = "block"
+                            showToast('Account Created Successfully, Please Check Your Email and verify', 'success')
                         }
 
                     },
 
                 })
             });
-            console.log($('#email').val())
 
         })
     </script>

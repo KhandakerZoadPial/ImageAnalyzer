@@ -179,6 +179,12 @@
             console.log($('#email').val())
 
         })
+
+        {% if messages %}
+            {% for msg in messages %}
+            showToast("{{msg}}", 'success')
+            {% endfor %}
+        {% endif %}
     </script>
 
 </body>

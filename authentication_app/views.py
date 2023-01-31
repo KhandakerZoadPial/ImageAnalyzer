@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, auth
 import json
-from .models import UserProfile, Plan
+from .models import UserProfile, Plan, Verify
 
 # Create your views here.
 
@@ -50,8 +50,9 @@ def signup(request):
         user_profile_object = UserProfile()
         user_profile_object.owner = user_object
         user_profile_object.gender = gender
-        user_profile_object.plan = plan_object
+        user_profile_object.plan_info = plan_object
         user_profile_object.save()
+        verify_send_mail(request, user_profile_object)
         # sendmail(user)
         return HttpResponse(json.dumps({'status': "3"}), content_type="application/json")
     else:
@@ -60,3 +61,59 @@ def signup(request):
 
 def logout(request):
     pass
+
+
+
+def verify_account(request, code):
+    verify_obj = Verify.objects.filter(code=code)
+    if verify_obj.count() > 0:
+        verify_obj = verify_obj[0]
+        user = verify_obj.whom
+        verify_obj.delete()
+        messages.success(request, 'Successfully Verified The Account!')
+        return redirect('login_')
+    else:
+        return render(request, 'error.html')
+
+
+
+
+
+
+# -----Helpers-----
+def send_mail(to, message):
+    pass
+
+
+def code_generator():
+    import string
+    import random
+    return ''.join(random.choices(string.ascii_uppercase +string.digits, k=20))
+
+
+def verify_send_mail(request, user_profile):
+    user_object = user_profile.owner
+    if Verify.objects.filter(whom=user_object).count() > 0:
+        verify_set = Verify.objects.filter(whom=user_object)
+        for item in verify_set:
+            item.delete()
+        
+    code = code_generator()
+    while True:
+        if Verify.objects.filter(code=code).count() == 0:
+            break
+        else:
+            code = code_generator()
+    
+    verify_obj = Verify()
+    verify_obj.whom = user_object
+    verify_obj.code = code
+    verify_obj.save()
+    urlObject = request.get_host()
+    urlObject = urlObject + f'/auth/verify/{code}'
+    message_text = 'Please Verify Your Account - '
+    message_text = message_text + 'http://'+urlObject
+    print(message_text)
+
+    # send_mail(user_object.username, 'Message')
+
